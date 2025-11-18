@@ -49,7 +49,6 @@ class TimerProvider extends ChangeNotifier {
 
   void startTimer() {
     if (_isRunning) return;
-    // SET NOTIFICATION
     _isRunning = true;
     _startTime = DateTime.now();
     _endTime = _startTime.add(Duration(seconds: _estimatedTime));
@@ -68,7 +67,7 @@ class TimerProvider extends ChangeNotifier {
             modeIndex = 1;
             updateTracking(modes[0]);
           } else {
-            modeIndex = 1;
+            modeIndex = 0;
           }
         } else {
           modeIndex = 2;

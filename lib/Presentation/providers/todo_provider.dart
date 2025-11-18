@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:pomodoro_desktop/Data/repository/todo_repo_impl.dart';
+import 'package:pomodoro_desktop/Data/repository/hive_todo_repo_impl.dart';
 import 'package:pomodoro_desktop/Domain/models/todo.dart';
 
 
 class TodoProvider extends ChangeNotifier {
 
-  final TodoRepoImpl todoRepo;
+  final HiveTodoRepoImpl todoRepo;
   TodoProvider({required this.todoRepo});
 
   List<Todo> _todos = [];
@@ -29,15 +29,18 @@ class TodoProvider extends ChangeNotifier {
   }
 
   Future<void> insertTodo(Todo todo) async {
-    final todoWithId = await todoRepo.createTodo(todo);
-    _todos.add(todoWithId);
+    await todoRepo.createTodo(todo);
+    _todos.add(todo);
+    if (todo.isNow) {
+      _todosNow.add(todo);
+    }
     notifyListeners();
   }
 
   Future<void> checkTodo(Todo todo) async {
     todo.checkTodo();
     notifyListeners();
-    await todoRepo.checkTodo(todo.id!, todo.completed);
+    await todoRepo.updateTodo(todo);
   }
 
   Future<void> deleteTodo(Todo todo) async {
@@ -46,7 +49,7 @@ class TodoProvider extends ChangeNotifier {
       _todosNow.remove(todo);
     }
     notifyListeners();
-    await todoRepo.deleteTodo(todo.id!);
+    await todoRepo.deleteTodo(todo.id);
   }
 
   void openNow() {
@@ -60,8 +63,12 @@ class TodoProvider extends ChangeNotifier {
   }
 
   Future<void> addToNow(Todo todo) async {
+    if (_todosNow.contains(todo)){
+      return;
+    }
+    todo.isNow = true;
     _todosNow.add(todo);
     notifyListeners();
-    await todoRepo.addToNow(todo);
+    await todoRepo.updateTodo(todo);
   }
 }

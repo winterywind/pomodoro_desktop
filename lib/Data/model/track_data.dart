@@ -1,45 +1,26 @@
 
+import 'package:hive/hive.dart';
 import 'package:pomodoro_desktop/Domain/models/track.dart';
 
-class DataTrack {
-  int? id;
-  DateTime? timestamp;
+part 'track_data.g.dart';
+@HiveType(typeId: 1)
+class HiveTrack {
+  @HiveField(0)
+  String id;
+
+  @HiveField(1)
+  DateTime timestamp;
+
+  @HiveField(2)
   int length;
 
-  DataTrack({this.id, required this.timestamp, required this.length});
+  HiveTrack({required this.id, required this.timestamp, required this.length});
+
+  factory HiveTrack.fromDomain(Track track) {
+    return HiveTrack(id: track.id, timestamp: track.timestamp, length: track.length);
+  }
 
   Track toDomain() {
-    return Track(
-      id: id,
-      timestamp: timestamp,
-      length: length
-    );
-  }
-
-  factory DataTrack.fromDomain(Track track) {
-    return DataTrack(
-      id: track.id,
-      timestamp: track.timestamp,
-      length: track.length
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    var map = {
-      'timestamp': timestamp!.toIso8601String().substring(0,9),
-      'length': length
-    };
-    if (id != null) {
-      map['id'] = id!;
-    }
-    return map;
-  }
-
-  factory DataTrack.fromMap(Map<String, dynamic> map) {
-    return DataTrack(
-      id: map['id'],
-      timestamp: DateTime.tryParse(map['timestamp']),
-      length: map['length']
-    );
+    return Track(id: id, timestamp: timestamp, length: length);
   }
 }

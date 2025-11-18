@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pomodoro_desktop/Domain/models/todo.dart';
+import 'package:pomodoro_desktop/Presentation/l10n/app_localizations.dart';
 import 'package:pomodoro_desktop/Presentation/providers/todo_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 class TaskPage extends StatefulWidget {
   const TaskPage({super.key});
@@ -33,26 +35,36 @@ class _TaskPageState extends State<TaskPage> {
               builder: (context, value, child) => Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('Tasks', style: TextStyle(fontSize: 24)),
-
+                  Text(AppLocalizations.of(context)!.tasks, style: TextStyle(fontSize: 24)),
+                  SizedBox(height: 10,),
                   SegmentedButton<String>(
-                    segments: const <ButtonSegment<String>>[
+                    segments: <ButtonSegment<String>>[
                       ButtonSegment<String>(
                         value: 'all',
                         label: Text(
-                          'All',
+                          AppLocalizations.of(context)!.all,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                       ButtonSegment<String>(
                         value: 'now',
                         label: Text(
-                          'Now',
+                          AppLocalizations.of(context)!.now,
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ],
                     selected: selectedValues,
+                    style: ButtonStyle(
+                      backgroundColor: WidgetStateProperty.resolveWith<Color?>((states) {
+                        if (states.contains(WidgetState.selected)) {
+                          return Colors.deepPurple;
+                        } else {
+                          return null;
+                        }
+                      },)
+                    ),
+                    showSelectedIcon: false,
                     onSelectionChanged: (Set<String> newSelection) {
                       setState(() {
                         selectedValues = newSelection;
@@ -65,19 +77,23 @@ class _TaskPageState extends State<TaskPage> {
                     },
                   ),
 
+                  SizedBox(height: 10,),
+
                   TextField(
                     controller: _controller,
                     onEditingComplete: () {
                       setState(() {});
                     },
                     onSubmitted: (title) {
-                      final todo = Todo(title: title, isNow: value.isNow);
+                      final todo = Todo(title: title, isNow: value.isNow, id: Uuid().v4());
                       value.insertTodo(todo);
                       _controller.clear();
                     },
 
-                    decoration: InputDecoration(label: Text('New task')),
+                    decoration: InputDecoration(label: Text(AppLocalizations.of(context)!.newTask)),
                   ),
+
+                  SizedBox(height: 10,),
 
                   Expanded(
                     child: ListView.builder(
@@ -124,11 +140,11 @@ class _TaskPageState extends State<TaskPage> {
                               return [
                                 PopupMenuItem(
                                   value: 'delete',
-                                  child: Text('Delete'),
+                                  child: Text(AppLocalizations.of(context)!.delete),
                                 ),
                                 PopupMenuItem(
                                   value: 'toNow',
-                                  child: Text('Add to Now'),
+                                  child: Text(AppLocalizations.of(context)!.addToNow),
                                 ),
                               ];
                             },

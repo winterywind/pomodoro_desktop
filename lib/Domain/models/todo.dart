@@ -1,10 +1,10 @@
 class Todo {
-  int? id;
+  String id;
   String title;
   bool completed;
   bool isNow;
 
-  Todo({this.id, required this.title, this.completed = false, required this.isNow});
+  Todo({required this.id, required this.title, this.completed = false, required this.isNow});
 
   void checkTodo() {
     completed = !completed;

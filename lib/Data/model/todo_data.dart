@@ -1,50 +1,30 @@
 import 'package:pomodoro_desktop/Domain/models/todo.dart';
+import 'package:hive/hive.dart';
 
-class DataTodo {
-  int? id;
+
+part 'todo_data.g.dart';
+
+@HiveType(typeId: 0)
+class HiveTodo {
+  @HiveField(0)
+  String id;
+
+  @HiveField(1)
   String title;
+
+  @HiveField(2)
   bool completed;
+
+  @HiveField(3)
   bool isNow;
 
-  DataTodo({this.id, required this.title, this.completed = false, required this.isNow});
+  HiveTodo({required this.id, required this.title, required this.completed, required this.isNow});
 
-  Todo toDomain() {
-    return Todo(
-      id: id,
-      title: title,
-      completed: completed,
-      isNow: isNow
-    );
+  factory HiveTodo.fromDomain(Todo todo) {
+    return HiveTodo(id: todo.id, title: todo.title, completed: todo.completed, isNow: todo.isNow);
   }
 
-  factory DataTodo.fromDomain(Todo todo) {
-    return DataTodo(
-      id: todo.id,
-      title: todo.title,
-      completed: todo.completed,
-      isNow: todo.isNow
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    var map = {
-      'title': title,
-      'completed': completed ? 1 : 0,
-      'is_now': isNow ? 1 : 0
-    };
-    if (id != null) {
-      map['id'] = id!;
-    }
-
-    return map;
-  }
-
-  factory DataTodo.fromMap(Map<String, dynamic> map) {
-    return DataTodo(
-      id: map['id'],
-      title: map['title'],
-      completed: map['completed'] == 1,
-      isNow: map['is_now'] == 1,
-    );
+  Todo toDomain(){
+    return Todo(id: id, title: title, completed: completed, isNow: isNow);
   }
 }

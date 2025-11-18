@@ -1,7 +1,7 @@
 class Track {
-  int? id;
-  DateTime? timestamp;
+  String id;
+  DateTime timestamp;
   int length;
 
-  Track({this.id, required this.timestamp, required this.length});
+  Track({required this.id, required this.timestamp, required this.length});
 }
